@@ -11,6 +11,8 @@ app.use(express.json());
 const userSessions = new Map();
 const ADMIN_CHAT_ID = parseInt(process.env.ADMIN_CHAT_ID) || 0;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin123";
+const ADMIN_CHAT_ID1 = parseInt(process.env.ADMIN_CHAT_ID1) || 0;
+const ADMIN_PASSWORD1 = process.env.ADMIN_PASSWORD1 || "admin123";
 let startups;
 try {
     const data = fs.readFileSync('data.json', 'utf8');
@@ -43,7 +45,7 @@ function saveData() {
     fs.writeFileSync('data.json', JSON.stringify(dataToSave, null, 2));
 }
 function isAdmin(chatId) {
-    return chatId === ADMIN_CHAT_ID;
+    return chatId === ADMIN_CHAT_ID || chatId === ADMIN_CHAT_ID1;
 }
 function sendErrorMessage(chatId, error) {
     bot.sendMessage(chatId, `❌ Xatolik yuz berdi: ${error.message || 'Nomalum xatolik'}. Iltimos, qayta urining.`);
@@ -216,7 +218,7 @@ bot.on('message', (msg) => {
     const text = msg.text;
 
     if (session?.mode === "awaiting_password") {
-        if (text === ADMIN_PASSWORD) {
+        if (text === ADMIN_PASSWORD || text === ADMIN_PASSWORD1) {
             bot.sendMessage(chatId, "📋 Boshlang'ich ma'lumotlarni yoki bugungi aksiyani kiritish uchun tanlang:\n11. Boshlang'ich ma'lumotlar kiritish\n12. Bugungi aksiya kiritish").catch(err => sendErrorMessage(chatId, err));
             userSessions.set(chatId, { mode: "admin_mode" });
         } else {
